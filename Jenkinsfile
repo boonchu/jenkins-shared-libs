@@ -1,7 +1,7 @@
 #!/usr/bin/groovy
 
 // https://www.jenkins.io/doc/book/pipeline/shared-libraries/
-@Library('jenkins-shared-lib') _
+@Library('jenkins-shared-lib@1.0.0') _
 
 pipeline{
     agent {
