@@ -1,6 +1,6 @@
 #!/usr/bin/groovy
 
-# https://www.jenkins.io/doc/book/pipeline/shared-libraries/
+// https://www.jenkins.io/doc/book/pipeline/shared-libraries/
 @Library('jenkins-shared-lib') _
 
 pipeline{
