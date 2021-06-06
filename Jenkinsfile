@@ -25,14 +25,16 @@ spec:
         stage("A"){
             steps{
                 step {
-                    echo "========executing A========"
-                    try {
-                        sleep 5
-                        helloWorld("Darin")
-                    } catch (Exception ex) {
-                        println ex.printStackTrace()
+                    sh 'echo "========executing A========"'
+                    script {
+                        try {
+                            sleep 5
+                            helloWorld("Darin")
+                        } catch (Exception ex) {
+                            println ex.printStackTrace()
+                        }
+                        sh 'echo "Finishing"'
                     }
-                    echo "Finishing"
                 }
             }
             post{
