@@ -24,14 +24,16 @@ spec:
     stages{
         stage("A"){
             steps{
-                echo "========executing A========"
-                try {
-                    sleep 5
-                    helloWorld("Darin")
-                } catch (Exception ex) {
-                    println ex.printStackTrace()
+                step {
+                    echo "========executing A========"
+                    try {
+                        sleep 5
+                        helloWorld("Darin")
+                    } catch (Exception ex) {
+                        println ex.printStackTrace()
+                    }
+                    echo "Finishing"
                 }
-                echo "Finishing"
             }
             post{
                 always{
