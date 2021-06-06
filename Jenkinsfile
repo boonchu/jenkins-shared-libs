@@ -1,6 +1,7 @@
 #!/usr/bin/groovy
 
-@Library('github.com/darinpope/github-api-global-lib@master') _
+# https://www.jenkins.io/doc/book/pipeline/shared-libraries/
+@Library('jenkins-shared-lib') _
 
 pipeline{
     agent {
