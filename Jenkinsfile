@@ -3,8 +3,22 @@
 @Library('github.com/darinpope/github-api-global-lib@master') _
 
 pipeline{
-    agent{
-        label "node"
+    agent {
+        kubernetes {
+            yaml '''
+apiVersion: v1
+kind: Pod
+spec:
+  containers:
+  - name: shell
+    image: adoptopenjdk/openjdk11:alpine
+    command:
+    - sleep
+    args:
+    - infinity
+'''
+            defaultContainer 'shell'
+        }
     }
     stages{
         stage("A"){
