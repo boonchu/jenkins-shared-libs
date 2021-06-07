@@ -29,7 +29,7 @@ spec:
 		    doGenerateSubmoduleConfigurations: false, 
 		    extensions: [[$class: 'CleanCheckout']], 
 		    submoduleCfg: [], 
-		    userRemoteConfigs: [[url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git']]
+                    userRemoteConfigs: [[url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git'],[credentialsId:'github-credential']]
 		])
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
             }
