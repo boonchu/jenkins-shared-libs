@@ -41,8 +41,10 @@ spec:
         stage("B"){
             steps{
                 // helloWorldSimple("Boonchu", "Monday")
-                def config = {
-                    put('sonar.sing', "toomuch")
+                script {
+                    def config = {
+                        put('sonar.sing', "toomuch")
+                    }
                 }
                 closurePipeline(config)
             }
