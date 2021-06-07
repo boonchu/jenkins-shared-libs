@@ -3,7 +3,7 @@
 // https://www.jenkins.io/doc/book/pipeline/shared-libraries/
 @Library('jenkins-shared-lib@1.0.0') _
 
-pipeline{
+pipeline {
     agent {
         kubernetes {
             yaml '''
@@ -21,28 +21,17 @@ spec:
             defaultContainer 'shell'
         }
     }
-    stages{
-        stage("A"){
-            steps{
+    stages {
+        stage("A") {
+            steps {
                 checkout([$class: 'GitSCM', 
-		    branches: [[name: '*/master']], 
-		    doGenerateSubmoduleConfigurations: false, 
-		    extensions: [[$class: 'CleanCheckout']], 
-		    submoduleCfg: [], 
-                    userRemoteConfigs: [[url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git'],[credentialsId:'github-credential']]
-		])
+                    branches: [[name: '*/master']], 
+                    doGenerateSubmoduleConfigurations: false, 
+                    extensions: [[$class: 'CleanCheckout']], 
+                    submoduleCfg: [], 
+                    userRemoteConfigs: [[credentialsId: 'github-credential', url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git']]
+                ])
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
-            }
-            post{
-                always{
-                    echo "========always========"
-                }
-                success{
-                    echo "========A executed successfully========"
-                }
-                failure{
-                    echo "========A execution failed========"
-                }
             }
         }
         stage("B"){
@@ -56,16 +45,16 @@ spec:
                 }
             }
         }
-    }
-    post{
-        always{
-            echo "========always========"
-        }
-        success{
-            echo "========pipeline executed successfully ========"
-        }
-        failure{
-            echo "========pipeline execution failed========"
+        post{
+            always{
+                echo "========always========"
+            }
+            success{
+                echo "========pipeline executed successfully ========"
+            }
+            failure{
+                echo "========pipeline execution failed========"
+            }
         }
     }
 }
