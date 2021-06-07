@@ -24,7 +24,7 @@ spec:
     stages{
         stage("A"){
             steps{
-                helloWorld("Darin")
+                helloWorld(name:"Darin", dayOfWeek:"Wednesday")
             }
             post{
                 always{
