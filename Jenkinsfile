@@ -24,6 +24,13 @@ spec:
     stages{
         stage("A"){
             steps{
+                checkout([$class: 'GitSCM', 
+		    branches: [[name: '*/master']], 
+		    doGenerateSubmoduleConfigurations: false, 
+		    extensions: [[$class: 'CleanCheckout']], 
+		    submoduleCfg: [], 
+		    userRemoteConfigs: [[url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git']]
+		])
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
             }
             post{
