@@ -38,6 +38,11 @@ spec:
                 }
             }
         }
+        stage("B"){
+            steps{
+                helloWorldExternal(name:"Darin", dayOfWeek:"Wednesday")
+            }
+        }
     }
     post{
         always{
