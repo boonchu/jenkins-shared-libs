@@ -40,7 +40,10 @@ spec:
         }
         stage("B"){
             steps{
-                helloWorldExternal(name:"Boonchu", dayOfWeek:"Monday")
+                // helloWorldSimple("Boonchu", "Monday")
+                closurePipeline {
+                    sonar.sing = "toomuch"
+                }
             }
         }
     }
