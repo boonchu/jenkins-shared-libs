@@ -45,8 +45,8 @@ spec:
                     def config = {
                         put('sonar.sing', "toomuch")
                     }
+                    closurePipeline(config)
                 }
-                closurePipeline(config)
             }
         }
     }
