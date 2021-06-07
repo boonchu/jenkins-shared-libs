@@ -22,7 +22,7 @@ spec:
         }
     }
     stages {
-        stage("A") {
+        stage("Build") {
             steps {
                 checkout([$class: 'GitSCM', 
                     branches: [[name: '*/master']], 
@@ -32,9 +32,15 @@ spec:
                     userRemoteConfigs: [[credentialsId: 'github-credential', url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git']]
                 ])
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
-            }
+                try {
+                    sh "sudo docker rmi frontend-test"
+                } catch (err) {
+                    echo err.getMessage()
+                    echo "Error detected, but we will continue."
+                } 
+            } 
         }
-        stage("B"){
+        stage("Test"){
             steps{
                 helloWorldSimple("Boonchu", "Monday")
                 script {
