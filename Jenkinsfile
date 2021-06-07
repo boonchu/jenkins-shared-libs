@@ -40,7 +40,7 @@ spec:
         }
         stage("B"){
             steps{
-                helloWorldExternal(name:"Darin", dayOfWeek:"Wednesday")
+                helloWorldExternal(name:"Boonchu", dayOfWeek:"Monday")
             }
         }
     }
