@@ -40,12 +40,12 @@ spec:
         }
         stage("B"){
             steps{
-                // helloWorldSimple("Boonchu", "Monday")
+                helloWorldSimple("Boonchu", "Monday")
                 script {
                     def config = {
                         put('sonar.sing', "toomuch")
                     }
-                    closurePipeline(config)
+                    fooProject(config)
                 }
             }
         }
