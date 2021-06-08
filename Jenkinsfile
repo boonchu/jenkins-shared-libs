@@ -6,8 +6,11 @@
 pipeline {
 
     parameters {
-        string(name: 'PARAM1', defaultValue: '', description: 'Param 1?')
-        string(name: 'PARAM2', defaultValue: '', description: 'Param 2?')
+        string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
+        choice(name: 'APPEND_COMMIT_VERSION', choices: 'ON\nOFF', description: 'Append Git commit ID to build version?')
+        choice(name: 'DEBUG_SQL', choices: '0\n1\n2', description: 'Level of SQL tracing.\n0 - disabled.')
+        choice(name: 'SAP_CONNECTION_POOL_DEBUG', choices: '0\n1', description: 'Level of SAP connection pool tracing.\nWorks only in debug builds.\n0 - disabled.')
+        choice(name: 'BUILD_TYPE', choices: 'RelWithDebInfo\nDebug\nRelease', description: 'Build type')
     }
 
     agent {
@@ -28,9 +31,11 @@ spec:
         }
     }
 
-    // using the Timestamper plugin we can add timestamps to the console log
     options {
+        // using the Timestamper plugin we can add timestamps to the console log
         timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+        disableConcurrentBuilds()
     }
 
     stages {
@@ -59,8 +64,8 @@ spec:
                 helloWorldSimple("Boonchu", "Monday")
                 script {
                     def config = {
-                        put("param1", [string(name: 'PARAM1', value: params.PARAM1)])
-                        put("param2", [string(name: 'PARAM2', value: params.PARAM2)])
+                        put("BRANCH", [string(name: 'BRANCH', value: params.BRANCH)])
+                        put("DEBUG_SQL", [string(name: 'DEBUG_SQL', value: params.DEBUG_SQL)])
                     }
                     fooProject(config)
                 }
