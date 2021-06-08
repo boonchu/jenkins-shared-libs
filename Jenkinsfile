@@ -4,6 +4,12 @@
 @Library('jenkins-shared-lib@1.0.0') _
 
 pipeline {
+
+    parameters {
+        string(name: 'PARAM1', defaultValue: '', description: 'Param 1?')
+        string(name: 'PARAM2', defaultValue: '', description: 'Param 2?')
+    }
+
     agent {
         kubernetes {
             yaml '''
@@ -21,6 +27,12 @@ spec:
             defaultContainer 'shell'
         }
     }
+
+    // using the Timestamper plugin we can add timestamps to the console log
+    options {
+        timestamps()
+    }
+
     stages {
         stage("Build") {
             steps {
@@ -47,7 +59,8 @@ spec:
                 helloWorldSimple("Boonchu", "Monday")
                 script {
                     def config = {
-                        put('sonar.sing', "toomuch")
+                        put("param1", [string(name: 'PARAM1', value: params.PARAM1)])
+                        put("param2", [string(name: 'PARAM2', value: params.PARAM2)])
                     }
                     fooProject(config)
                 }
