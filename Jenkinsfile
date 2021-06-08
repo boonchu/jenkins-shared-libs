@@ -39,7 +39,8 @@ spec:
     options {
         // using the Timestamper plugin we can add timestamps to the console log
         timestamps()
-        ansiColor('xterm')
+        // ansiColor('xterm')
+        // echo '\033[34mHello\033[0m \033[33mcolorful\033[0m \033[35mworld!\033[0m'
         timeout(time: 150, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
