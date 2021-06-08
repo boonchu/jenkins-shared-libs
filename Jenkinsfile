@@ -5,6 +5,11 @@
 
 pipeline {
 
+    environment{
+        def EARLIESTDATE = '0'
+        def LATESTDATE = '0'
+    }
+
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
         choice(name: 'APPEND_COMMIT_VERSION', choices: 'ON\nOFF', description: 'Append Git commit ID to build version?')
@@ -63,6 +68,10 @@ spec:
             steps{
                 helloWorldSimple("Boonchu", "Monday")
                 script {
+                    def rootDir = pwd()
+                    echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
+                    echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
+                    echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
                     def config = {
                         put("BRANCH", params.BRANCH)
                         put("DEBUG_SQL", params.DEBUG_SQL)
