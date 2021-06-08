@@ -72,7 +72,7 @@ spec:
                     echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
-                    Closure actions = {
+                    def actions = {
                         put("BRANCH", "master")
                         put("DEBUG_SQL", "1")
                     }
