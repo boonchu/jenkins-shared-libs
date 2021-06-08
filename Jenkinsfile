@@ -72,12 +72,11 @@ spec:
                     echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
-                    def config(params) = {
-                        // put("BRANCH", "${params.BRANCH}")
-                        // put("DEBUG_SQL", "${params.DEBUG_SQL}")
+                    Closure actions = {
                         put("BRANCH", "${params.BRANCH}")
+                        put("DEBUG_SQL", "${params.DEBUG_SQL}")
                     }
-                    fooProject(config)
+                    fooProject(params, actions)
                 }
             }
         }
