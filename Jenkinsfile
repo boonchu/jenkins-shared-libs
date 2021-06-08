@@ -71,9 +71,11 @@ spec:
         }
         stage("Build") {
             steps {
-                // container("maven") {
-                //    sh 'mvn clean build'
-                //}
+                container("maven") {
+                    sh """
+			mvn clean
+		    """
+                }
                 script {
                     try {
                            sh 'sudo echo "hello world"'
