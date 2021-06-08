@@ -64,11 +64,12 @@ spec:
         }
         stage("Build") {
             steps {
+                container("maven") {
+                    sh 'mvn clean build'
+                }
                 script {
                     try {
-                        container("maven") {
-                           sh "mvn clean"
-                        }
+                           sh 'sudo echo "hello world"'
                     } catch (err) {
                         echo err.getMessage()
                         echo "Error detected, but we will continue."
