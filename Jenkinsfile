@@ -12,26 +12,23 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
-        choice(name: 'APPEND_COMMIT_VERSION', choices: 'ON\nOFF', description: 'Append Git commit ID to build version?')
-        choice(name: 'DEBUG_SQL', choices: '0\n1\n2', description: 'Level of SQL tracing.\n0 - disabled.')
-        choice(name: 'SAP_CONNECTION_POOL_DEBUG', choices: '0\n1', description: 'Level of SAP connection pool tracing.\nWorks only in debug builds.\n0 - disabled.')
-        choice(name: 'BUILD_TYPE', choices: 'RelWithDebInfo\nDebug\nRelease', description: 'Build type')
+        choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-8\nmaven:3.8.1-openjdk-11\n', description: 'Use Maven Image Version?')
     }
 
     agent {
         kubernetes {
-            yaml '''
+            yaml """
 apiVersion: v1
 kind: Pod
 spec:
   containers:
-  - name: shell
-    image: adoptopenjdk/openjdk11:alpine
+  - name: maven
+    image: "${params.MAVEN_IMAGE_VERSION}"
     command:
     - sleep
     args:
     - infinity
-'''
+"""
             defaultContainer 'shell'
         }
     }
@@ -47,35 +44,41 @@ spec:
     }
 
     stages {
-        stage("Build") {
+        stage("Init") {
             steps {
+                script {
+                    def rootDir = pwd()
+                    echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
+                    echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
+                    echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
+                }
                 checkout([$class: 'GitSCM', 
-                    branches: [[name: '*/master']], 
+                    branches: [[name: "*/${params.BRANCH}"]], 
                     doGenerateSubmoduleConfigurations: false, 
                     extensions: [[$class: 'CleanCheckout']], 
                     submoduleCfg: [], 
                     userRemoteConfigs: [[credentialsId: 'github-credential', url: 'https://github.com/boonchu/spring-boot-reactive-jenkins-pipeline.git']]
                 ])
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
+            }
+        }
+        stage("Build") {
+            steps {
                 script {
                     try {
-                        sh "sudo docker rmi frontend-test"
+                        container("maven") {
+                           sh "mvn clean"
+                        }
                     } catch (err) {
                         echo err.getMessage()
                         echo "Error detected, but we will continue."
                     } 
-                }
+                }         
             } 
         }
         stage("Test"){
             steps{
                 helloWorldSimple("Boonchu", "Monday")
-                script {
-                    def rootDir = pwd()
-                    echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
-                    echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
-                    echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
-                }
             }
         }
     }
