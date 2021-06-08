@@ -17,6 +17,7 @@ pipeline {
 
     agent {
         kubernetes {
+            defaultContainer 'maven'
             yaml """
 apiVersion: v1
 kind: Pod
@@ -29,7 +30,6 @@ spec:
     args:
     - infinity
 """
-            defaultContainer 'shell'
         }
     }
 
@@ -64,9 +64,9 @@ spec:
         }
         stage("Build") {
             steps {
-                container("maven") {
-                    sh 'mvn clean build'
-                }
+                // container("maven") {
+                //    sh 'mvn clean build'
+                //}
                 script {
                     try {
                            sh 'sudo echo "hello world"'
