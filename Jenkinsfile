@@ -73,7 +73,7 @@ spec:
             steps {
                 container("maven") {
                     sh """
-			mvn clean
+			mvn clean install -DskipTests=true -f pom.xml
 		    """
                 }
                 script {
