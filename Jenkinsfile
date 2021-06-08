@@ -73,8 +73,9 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
                     def config = {
-                        put("BRANCH", "${params.BRANCH}")
-                        put("DEBUG_SQL", "${params.DEBUG_SQL}")
+                        // put("BRANCH", "${params.BRANCH}")
+                        // put("DEBUG_SQL", "${params.DEBUG_SQL}")
+                        put("BRANCH", "master")
                     }
                     fooProject(config)
                 }
