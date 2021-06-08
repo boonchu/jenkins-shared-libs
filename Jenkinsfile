@@ -39,6 +39,8 @@ spec:
     options {
         // using the Timestamper plugin we can add timestamps to the console log
         timestamps()
+        ansiColor('xterm')
+        timeout(time: 150, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
     }
@@ -73,8 +75,7 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
                     def actions = {
-                        put("BRANCH", "master")
-                        put("DEBUG_SQL", "1")
+                        put("BRANCH", [string(name: 'BRANCH', value: params.BRANCH)])
                     }
                     fooProject(actions)
                 }
