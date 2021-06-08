@@ -64,8 +64,8 @@ spec:
                 helloWorldSimple("Boonchu", "Monday")
                 script {
                     def config = {
-                        put("BRANCH", [string(name: 'BRANCH', value: params.BRANCH)])
-                        put("DEBUG_SQL", [string(name: 'DEBUG_SQL', value: params.DEBUG_SQL)])
+                        put("BRANCH", value: params.BRANCH)
+                        put("DEBUG_SQL", params.DEBUG_SQL)
                     }
                     fooProject(config)
                 }
