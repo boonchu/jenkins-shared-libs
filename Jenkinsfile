@@ -73,10 +73,10 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
                     Closure actions = {
-                        put("BRANCH", "${params.BRANCH}")
-                        put("DEBUG_SQL", "${params.DEBUG_SQL}")
+                        put("BRANCH", "master")
+                        put("DEBUG_SQL", "1")
                     }
-                    fooProject(params, actions)
+                    fooProject(actions)
                 }
             }
         }
