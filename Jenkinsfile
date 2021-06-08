@@ -72,10 +72,10 @@ spec:
                     echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->DEBUG_SQL : ${params.DEBUG_SQL}"
-                    def config = {
+                    def config(params) = {
                         // put("BRANCH", "${params.BRANCH}")
                         // put("DEBUG_SQL", "${params.DEBUG_SQL}")
-                        put("BRANCH", "master")
+                        put("BRANCH", "${params.BRANCH}")
                     }
                     fooProject(config)
                 }
