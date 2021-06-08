@@ -52,6 +52,13 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
                 }
+                container("maven") {
+                    sh """
+			env | sort
+			mvn -v
+			java -version
+		    """
+                }
                 checkout([$class: 'GitSCM', 
                     branches: [[name: "*/${params.BRANCH}"]], 
                     doGenerateSubmoduleConfigurations: false, 
