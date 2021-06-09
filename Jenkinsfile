@@ -72,7 +72,7 @@ spec:
         stage("Build") {
             steps {
                 container("maven") {
-                    configFileProvider([configFile(fileId: '6f691bda-658b-4e4f-8e9b-eb70f39e4593', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                    configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh 'mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS'
                     }
                 }
