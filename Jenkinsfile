@@ -11,7 +11,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
-        choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-8\nmaven:3.8.1-openjdk-11\n', description: 'Use Maven Image Version?')
+        choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-11\nmaven:3.8.1-openjdk-8\n', description: 'Use Maven Image Version?')
     }
 
     agent {
@@ -98,10 +98,12 @@ spec:
         stage("Maven functional Test"){
             steps{
                 helloWorldSimple("Boonchu", "Monday")
-                configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
-                    sh """
-                       mvn test -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
-		    """
+                container("maven") {
+                    configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                        sh """
+                           mvn test -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
+	    	        """
+                    }
                 }
             }
         }
@@ -109,10 +111,10 @@ spec:
             steps{
                junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                jacoco(
-                   execPattern: '**/path_to_file/jacoco.exec',
-                   classPattern: '**/coverage/**',
-                   sourcePattern: '**/coverage/**',
-                   inclusionPattern: '**/*.class'
+                   execPattern: '**/**.exec',
+                   classPattern: '**/classes',
+                   sourcePattern: '**/src/main/java',
+                   inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*'
 	       )
             }
         }
