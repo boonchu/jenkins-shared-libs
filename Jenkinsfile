@@ -115,6 +115,7 @@ spec:
                    inclusionPattern: '**/*.class'
 	       )
             }
+        }
     }
     post{
         always{
