@@ -107,7 +107,7 @@ spec:
         }
         stage("Jacoco Code Coverage"){
             steps{
-               junit '*/build/test-results/*.xml'
+               junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                jacoco(
                    execPattern: '**/path_to_file/jacoco.exec',
                    classPattern: '**/coverage/**',
