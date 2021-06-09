@@ -76,7 +76,7 @@ spec:
                     configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
 			   cat $MAVEN_GLOBAL_SETTINGS
-                           mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS'
+                           mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
 			"""
                     }
                 }
