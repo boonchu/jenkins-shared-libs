@@ -6,8 +6,7 @@
 pipeline {
 
     environment{
-        def EARLIESTDATE = '0'
-        def LATESTDATE = '0'
+        def CONFIG_FILE_UUID = '8ac4e324-359d-4b24-9cc3-04893a7d56ce'
     }
 
     parameters {
@@ -51,6 +50,7 @@ spec:
                     echo "LOG-->INFO-->Current Working Directory : ${rootDir}"
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
+                    echo "LOG-->INFO-->CONFIG_FILE_UUID : ${CONFIG_FILE_UUID}"
                 }
                 container("maven") {
                     sh """
@@ -71,10 +71,16 @@ spec:
         }
         stage("Build") {
             steps {
+                script {
+                    def pom = readMavenPom file: 'pom.xml'
+                    ARTIFACT_VERSION = pom.version
+                    echo "LOG-->INFO-->ARTIFACT_VERSION : ${ARTIFACT_VERSION}"
+                }
                 container("maven") {
                     // https://shekhargulati.com/2019/02/09/using-jenkins-config-file-provider-plugin-to-allow-jenkins-slave-to-access-mavens-global-settings-xml/
-                    configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
+			   echo "artifact version: ${ARTIFACT_VERSION}"
                            mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
 			"""
                     }

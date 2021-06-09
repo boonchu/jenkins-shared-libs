@@ -10,7 +10,11 @@
 
 * https://www.youtube.com/watch?v=mbeQWBNaNKQ
 
-### Libraries
+### Examples
+
+* https://github.com/pavankjadda/BookStore/blob/master/Jenkinsfile
+
+### Shared Libraries
 
 * https://github.com/Perficient-DevOps/jenkins-shared-library
 
@@ -22,3 +26,14 @@
 * https://stackoverflow.com/questions/39451345/using-credentials-from-jenkins-store-in-a-jenkinsfile
 * https://support.cloudbees.com/hc/en-us/articles/226122247-How-to-customize-Checkout-for-Pipeline-Multibranch
 * https://stackoverflow.com/questions/29742847/jenkins-trigger-build-if-new-tag-is-released
+
+### labs
+
+* Setup 'manage config' to provision settings.xml to integrate with Nexus repository
+
+- required Config File Provider Plugin
+- Managed Jenkins -> Managed Files
+- Add a new config nexus-maven-settings.xml -> add serverId nexus.dev
+- Roll in the template 'settings-template.xml'
+- Provision Jenkins credential for Nexus (nexus.dev, nexus username and password)
+- Replace CONFIG_FILE_UUID in Jenkinsfile environment variable

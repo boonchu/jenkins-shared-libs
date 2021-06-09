@@ -123,7 +123,7 @@
      | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
      -->
     <mirror>
-      <id>nexus.mirror</id>
+      <id>nexus.dev</id>
       <mirrorOf>*</mirrorOf>
       <name>Nexus Mirror Repo</name>
       <url>http://172.30.30.102:8081/repository/maven-central/</url>
@@ -155,7 +155,7 @@
   <profiles>
 
     <profile>
-        <id>nexus</id>
+        <id>nexus.dev</id>
         <!--Enable snapshots for the built in central repo to direct -->
         <!--all requests to nexus via the mirror -->
         <repositories>
@@ -176,6 +176,33 @@
         </pluginRepositories>
     </profile>
 
+    <profile>
+        <id>maven-central</id>
+        <!--Enable snapshots for the built in central repo to direct -->
+        <!--all requests to nexus via the mirror -->
+        <repositories>
+            <repository>
+                <id>central</id>
+                <url>http://repo1.maven.org/maven2/</url>
+                <releases><enabled>true</enabled></releases>
+                <snapshots><enabled>true</enabled></snapshots>
+            </repository>
+        </repositories>
+        <pluginRepositories>
+            <pluginRepository>
+                <id>central</id>
+                <url>http://repo1.maven.org/maven2/</url>
+                <releases><enabled>true</enabled></releases>
+                <snapshots><enabled>true</enabled></snapshots>
+            </pluginRepository>
+        </pluginRepositories>
+     </profile>    
+    
   </profiles>
+            
+  <activeProfiles>
+     <!--make the profile active all the time -->
+     <activeProfile>nexus.dev</activeProfile>
+  </activeProfiles>          
 
 </settings>
