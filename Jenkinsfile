@@ -72,9 +72,9 @@ spec:
         stage("Build") {
             steps {
                 container("maven") {
-                    sh """
-			mvn clean install -DskipTests=true -f pom.xml -s settings.xml
-		    """
+                    configFileProvider([configFile(fileId: '6f691bda-658b-4e4f-8e9b-eb70f39e4593', variable: 'maven-nexus-settings.xml')]) {
+                        sh 'mvn clean install -DskipTests=true -f pom.xml -gs maven-nexus-settings.xml'
+                    }
                 }
                 script {
                     try {
