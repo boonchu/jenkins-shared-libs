@@ -75,7 +75,6 @@ spec:
                     // https://shekhargulati.com/2019/02/09/using-jenkins-config-file-provider-plugin-to-allow-jenkins-slave-to-access-mavens-global-settings-xml/
                     configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
-			   cat $MAVEN_GLOBAL_SETTINGS
                            mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
 			"""
                     }
@@ -93,6 +92,11 @@ spec:
         stage("Test"){
             steps{
                 helloWorldSimple("Boonchu", "Monday")
+                configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                    sh """
+                       mvn test -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
+		    """
+                }
             }
         }
     }
