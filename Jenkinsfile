@@ -43,7 +43,7 @@ spec:
     }
 
     stages {
-        stage("Init") {
+        stage("Initialize Environment") {
             steps {
                 script {
                     def rootDir = pwd()
@@ -69,7 +69,7 @@ spec:
                 helloWorld(name:"Darin", dayOfWeek:"Wednesday")
             }
         }
-        stage("Build") {
+        stage("Maven Build") {
             steps {
                 script {
                     def pom = readMavenPom file: 'pom.xml'
@@ -95,7 +95,7 @@ spec:
                 }         
             } 
         }
-        stage("Test"){
+        stage("Maven functional Test"){
             steps{
                 helloWorldSimple("Boonchu", "Monday")
                 configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
@@ -105,6 +105,16 @@ spec:
                 }
             }
         }
+        stage("Jacoco Code Coverage"){
+            steps{
+               junit '*/build/test-results/*.xml'
+               jacoco(
+                   execPattern: '**/path_to_file/jacoco.exec',
+                   classPattern: '**/coverage/**',
+                   sourcePattern: '**/coverage/**',
+                   inclusionPattern: '**/*.class'
+	       )
+            }
     }
     post{
         always{

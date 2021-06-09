@@ -13,6 +13,8 @@
 ### Examples
 
 * https://github.com/pavankjadda/BookStore/blob/master/Jenkinsfile
+* https://gist.github.com/merikan/228cdb1893fca91f0663bab7b095757c
+* https://github.com/darinpope?tab=repositories
 
 ### Shared Libraries
 
@@ -30,6 +32,8 @@
 ### labs
 
 * Setup 'manage config' to provision settings.xml to integrate with Nexus repository
+
+  - https://blog.sonatype.com/using-nexus-3-as-your-repository-part-1-maven-artifacts
 
 - required Config File Provider Plugin
 - Managed Jenkins -> Managed Files
