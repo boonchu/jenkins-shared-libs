@@ -136,10 +136,18 @@ spec:
                container("maven") {
                    junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                    jacoco(
-                       execPattern: '**/**.exec',
+		       buildOverBuild: false,
+		       changeBuildStatus: true,
                        classPattern: '**/classes',
+                       execPattern: '**/**.exec',
                        sourcePattern: '**/src/main/java',
-                       inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*'
+                       inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
+                       minimumMethodCoverage: '80',
+		       maximumMethodCoverage: '85',
+		       minimumClassCoverage: '80',
+		       maximumClassCoverage: '85',
+		       minimumLineCoverage: '80',
+		       maximumLineCoverage: '85'
 	           )
                }
             }
