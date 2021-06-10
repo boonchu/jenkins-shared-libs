@@ -118,7 +118,8 @@ spec:
                helloWorldSimple("Boonchu", "Tuesday")
                container("maven") {
                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/
-                   withSonarQubeEnv("${SONAR_VERSION}") {
+                   // withSonarQubeEnv("${SONAR_VERSION}") {
+                   withSonarQubeEnv('sonarqube-4.6') {
                         sh """
 			    mvn clean compile sonar:sonar -f pom.xml \
 				-Dsonar.projectKey=maven-code-analysis \
