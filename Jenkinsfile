@@ -121,6 +121,7 @@ spec:
                    """
                }
             }
+        }
         stage("Jacoco Code Coverage"){
             steps{
                helloWorldSimple("Boonchu", "Wednesday")

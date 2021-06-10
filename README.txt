@@ -41,3 +41,8 @@
 - Roll in the template 'settings-template.xml'
 - Provision Jenkins credential for Nexus (nexus.dev, nexus username and password)
 - Replace CONFIG_FILE_UUID in Jenkinsfile environment variable
+
+### labs
+
+* Setup 'Jacoco' Code Coverage
+  - https://www.youtube.com/watch?v=7FB-evY5L3o
