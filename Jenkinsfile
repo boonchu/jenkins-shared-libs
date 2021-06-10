@@ -11,8 +11,8 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
-        choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-11\nmaven:3.8.1-openjdk-8\n', description: 'Use Maven Image Version?')
-        choice(name: 'SONAR_VERSION', choices: 'sonarqube-4.6\nsonarqube-3.3\n', description: 'Use Maven Image Version?')
+        choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-11\nmaven:3.8.1-openjdk-8\n', description: 'Choice of Maven Image Versions?')
+        choice(name: 'SONAR_VERSION', choices: 'sonarqube-4.6\nsonarqube-3.3\n', description: 'Choice of Sonar Scanner Versions?')
     }
 
     agent {
@@ -113,12 +113,14 @@ spec:
             steps{
                helloWorldSimple("Boonchu", "Tuesday")
                container("maven") {
-                   sh """
-			mvn -f pom.xml clean compile sonar:sonar \
+                   withSonarQubeEnv("${SONAR_VERSION}") {
+                        sh """
+			    mvn clean compile sonar:sonar -f pom.xml \
 				-Dsonar.projectKey=maven-code-analysis \
 				-Dsonar.host.url=http://172.30.30.102:9000 \
 				-Dsonar.login=6d401f63ef2d3cbae6c1536064077d2178bb6d2e"
-                   """
+                        """
+                   }
                }
             }
         }
