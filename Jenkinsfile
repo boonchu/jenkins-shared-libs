@@ -6,7 +6,9 @@
 pipeline {
 
     environment{
-        def CONFIG_FILE_UUID = '8ac4e324-359d-4b24-9cc3-04893a7d56ce'
+        def CONFIG_FILE_UUID   = '8ac4e324-359d-4b24-9cc3-04893a7d56ce'
+        def SONAR_SERVER_URL   = 'http://172.30.30.102:9000'
+        def SONAR_SCANNER_HASH = '6d401f63ef2d3cbae6c1536064077d2178bb6d2e'
     }
 
     parameters {
@@ -53,6 +55,8 @@ spec:
                     echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
                     echo "LOG-->INFO-->CONFIG_FILE_UUID : ${CONFIG_FILE_UUID}"
                     echo "LOG-->INFO-->SONAR_VERSION : ${SONAR_VERSION}"
+                    echo "LOG-->INFO-->SONAR_SERVER_URL : ${SONAR_SERVER_URL}"
+                    echo "LOG-->INFO-->SONAR_SCANNER_HASH : ${SONAR_SCANNER_HASH}"
                 }
                 container("maven") {
                     sh """
@@ -101,7 +105,7 @@ spec:
             steps{
                 helloWorldSimple("Boonchu", "Monday")
                 container("maven") {
-                    configFileProvider([configFile(fileId: '8ac4e324-359d-4b24-9cc3-04893a7d56ce', variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
                            mvn test -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
 	    	        """
@@ -113,12 +117,13 @@ spec:
             steps{
                helloWorldSimple("Boonchu", "Tuesday")
                container("maven") {
+                   // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/
                    withSonarQubeEnv("${SONAR_VERSION}") {
                         sh """
 			    mvn clean compile sonar:sonar -f pom.xml \
 				-Dsonar.projectKey=maven-code-analysis \
-				-Dsonar.host.url=http://172.30.30.102:9000 \
-				-Dsonar.login=6d401f63ef2d3cbae6c1536064077d2178bb6d2e"
+				-Dsonar.host.url=${SONAR_SERVER_URL} \
+				-Dsonar.login=${SONAR_SCANNER_HASH}"
                         """
                    }
                }
