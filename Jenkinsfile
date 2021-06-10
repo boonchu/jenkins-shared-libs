@@ -12,6 +12,7 @@ pipeline {
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
         choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-11\nmaven:3.8.1-openjdk-8\n', description: 'Use Maven Image Version?')
+        choice(name: 'SONAR_VERSION', choices: 'sonarqube-4.6\nsonarqube-3.3\n', description: 'Use Maven Image Version?')
     }
 
     agent {
@@ -51,6 +52,7 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
                     echo "LOG-->INFO-->CONFIG_FILE_UUID : ${CONFIG_FILE_UUID}"
+                    echo "LOG-->INFO-->SONAR_VERSION : ${SONAR_VERSION}"
                 }
                 container("maven") {
                     sh """
@@ -107,15 +109,30 @@ spec:
                 }
             }
         }
+        stage("Static Code Analysis"){
+            steps{
+               helloWorldSimple("Boonchu", "Tuesday")
+               container("maven") {
+                   sh """
+			mvn -f pom.xml clean compile sonar:sonar \
+				-Dsonar.projectKey=maven-code-analysis \
+				-Dsonar.host.url=http://172.30.30.102:9000 \
+				-Dsonar.login=6d401f63ef2d3cbae6c1536064077d2178bb6d2e"
+                   """
+               }
+            }
         stage("Jacoco Code Coverage"){
             steps{
-               junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-               jacoco(
-                   execPattern: '**/**.exec',
-                   classPattern: '**/classes',
-                   sourcePattern: '**/src/main/java',
-                   inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*'
-	       )
+               helloWorldSimple("Boonchu", "Wednesday")
+               container("maven") {
+                   junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+                   jacoco(
+                       execPattern: '**/**.exec',
+                       classPattern: '**/classes',
+                       sourcePattern: '**/src/main/java',
+                       inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*'
+	           )
+               }
             }
         }
     }
