@@ -122,7 +122,7 @@ spec:
 		       mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
                           -Dsonar.projectKey=maven-code-analysis \
                           -Dsonar.host.url=${SONAR_SERVER_URL} \
-                          -Dsonar.login=${SONAR_SCANNER_HASH}"
+                          -Dsonar.login=${SONAR_SCANNER_HASH}
                    """
                }
             }

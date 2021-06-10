@@ -46,3 +46,8 @@
 
 * Setup 'Jacoco' Code Coverage
   - https://www.youtube.com/watch?v=7FB-evY5L3o
+
+### labs
+
+* Setup 'SonarQube Scanner' Code Analysis
+  - https://www.programmersought.com/article/6957827178/
