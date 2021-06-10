@@ -14,7 +14,7 @@ pipeline {
     parameters {
         string(name: 'BRANCH', defaultValue: 'master', description: 'Git branch to use for the build.')
         choice(name: 'MAVEN_IMAGE_VERSION', choices: 'maven:3.8.1-openjdk-11\nmaven:3.8.1-openjdk-8\n', description: 'Choice of Maven Image Versions?')
-        choice(name: 'SONAR_VERSION', choices: 'sonarqube-4.6\nsonarqube-3.3\n', description: 'Choice of Sonar Scanner Versions?')
+        choice(name: 'SONAR_PLUGIN_VERSION', choices: '3.9.0.2155\n3.8.0.2131\n3.7.0.1746\n', description: 'Choice of Sonar Plugin Versions?')
     }
 
     agent {
@@ -54,16 +54,16 @@ spec:
                     echo "LOG-->INFO-->BRANCH : ${params.BRANCH}"
                     echo "LOG-->INFO-->MAVEN_IMAGE_VERSION : ${params.MAVEN_IMAGE_VERSION}"
                     echo "LOG-->INFO-->CONFIG_FILE_UUID : ${CONFIG_FILE_UUID}"
-                    echo "LOG-->INFO-->SONAR_VERSION : ${SONAR_VERSION}"
+                    echo "LOG-->INFO-->SONAR_PLUGIN_VERSION : ${SONAR_PLUGIN_VERSION}"
                     echo "LOG-->INFO-->SONAR_SERVER_URL : ${SONAR_SERVER_URL}"
                     echo "LOG-->INFO-->SONAR_SCANNER_HASH : ${SONAR_SCANNER_HASH}"
                 }
                 container("maven") {
                     sh """
-			env | sort
-			mvn -v
-			java -version
-		    """
+                       env | sort
+                       mvn -v
+                       java -version
+                    """
                 }
                 checkout([$class: 'GitSCM', 
                     branches: [[name: "*/${params.BRANCH}"]], 
@@ -86,9 +86,9 @@ spec:
                     // https://shekhargulati.com/2019/02/09/using-jenkins-config-file-provider-plugin-to-allow-jenkins-slave-to-access-mavens-global-settings-xml/
                     configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
-			   echo "artifact version: ${ARTIFACT_VERSION}"
+                           echo "artifact version: ${ARTIFACT_VERSION}"
                            mvn clean install -DskipTests=true -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
-			"""
+                        """
                     }
                 }
                 script {
@@ -108,7 +108,7 @@ spec:
                     configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                         sh """
                            mvn test -f pom.xml -gs $MAVEN_GLOBAL_SETTINGS
-	    	        """
+                        """
                     }
                 }
             }
@@ -117,16 +117,13 @@ spec:
             steps{
                helloWorldSimple("Boonchu", "Tuesday")
                container("maven") {
-                   // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/
-                   // withSonarQubeEnv("${SONAR_VERSION}") {
-                   withSonarQubeEnv('sonarqube-4.6') {
-                        sh """
-			    mvn clean compile sonar:sonar -f pom.xml \
-				-Dsonar.projectKey=maven-code-analysis \
-				-Dsonar.host.url=${SONAR_SERVER_URL} \
-				-Dsonar.login=${SONAR_SCANNER_HASH}"
-                        """
-                   }
+                   // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/
+                   sh """
+		       mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
+                          -Dsonar.projectKey=maven-code-analysis \
+                          -Dsonar.host.url=${SONAR_SERVER_URL} \
+                          -Dsonar.login=${SONAR_SCANNER_HASH}"
+                   """
                }
             }
         }
