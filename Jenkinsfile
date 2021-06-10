@@ -118,12 +118,15 @@ spec:
                helloWorldSimple("Boonchu", "Tuesday")
                container("maven") {
                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/
-                   sh """
-		       mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
-                          -Dsonar.projectKey=maven-code-analysis \
-                          -Dsonar.host.url=${SONAR_SERVER_URL} \
-                          -Dsonar.login=${SONAR_SCANNER_HASH}
-                   """
+                   configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                       sh """
+		           mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
+                              -Dsonar.projectKey=maven-code-analysis \
+                              -Dsonar.host.url=${SONAR_SERVER_URL} \
+                              -Dsonar.login=${SONAR_SCANNER_HASH}
+		              -gs  $MAVEN_GLOBAL_SETTINGS
+                       """
+                   }
                }
             }
         }
