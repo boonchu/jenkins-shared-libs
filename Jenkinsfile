@@ -134,7 +134,25 @@ spec:
             steps{
                helloWorldSimple("Boonchu", "Wednesday")
                container("maven") {
-                   junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+
+                   configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                       withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
+                          sh """
+                              println ${env.SONAR_HOST_URL}
+                              mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar
+                          """
+                       } 
+                       // sh """
+		       //     mvn org.jacoco:jacoco-maven-plugin:${SONAR_PLUGIN_VERSION}:prepare-agent -f pom.xml clean test \
+		       //       -Dautoconfig.skip=true -Dmaven.test.skip=false \
+		       //       -Dmaven.test.failure.ignore=true sonar:sonar \
+                       //       -Dsonar.host.url=${SONAR_SERVER_URL} \
+                       //       -Dsonar.login=${SONAR_SCANNER_HASH} \
+		       //       -gs ${MAVEN_GLOBAL_SETTINGS}
+		       // """
+                       // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+                   }
+
                    jacoco(
 		       buildOverBuild: false,
 		       changeBuildStatus: true,
