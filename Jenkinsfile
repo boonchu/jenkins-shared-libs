@@ -139,18 +139,15 @@ spec:
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
                           sh """
                               echo ${env.SONAR_HOST_URL}
-                              mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar
-                          """
-                       } 
-                       // sh """
-		       //     mvn org.jacoco:jacoco-maven-plugin:${SONAR_PLUGIN_VERSION}:prepare-agent -f pom.xml clean test \
-		       //       -Dautoconfig.skip=true -Dmaven.test.skip=false \
-		       //       -Dmaven.test.failure.ignore=true sonar:sonar \
-                       //       -Dsonar.host.url=${SONAR_SERVER_URL} \
-                       //       -Dsonar.login=${SONAR_SCANNER_HASH} \
-		       //       -gs ${MAVEN_GLOBAL_SETTINGS}
-		       // """
-                       // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+		              mvn org.jacoco:jacoco-maven-plugin:${SONAR_PLUGIN_VERSION}:prepare-agent -f pom.xml clean test \
+		                -Dautoconfig.skip=true -Dmaven.test.skip=false \
+		                -Dmaven.test.failure.ignore=true sonar:sonar \
+                                -Dsonar.host.url=${SONAR_SERVER_URL} \
+                                -Dsonar.login=${SONAR_SCANNER_HASH} \
+		                -gs ${MAVEN_GLOBAL_SETTINGS}
+		          """
+                          // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+                       }
                    }
 
                    jacoco(
@@ -167,6 +164,15 @@ spec:
 		       minimumLineCoverage: '80',
 		       maximumLineCoverage: '85'
 	           )
+
+                   timeout(time: 5, unit: 'MINUTES') {
+                       script {
+                           def qg = waitForQualityGate()
+                           if (qg.status != 'OK') {
+                               error "Pipeline aborted due to a quality gate failure: ${qg.status}"
+                           }
+                       }
+                   }
                }
             }
         }
