@@ -138,7 +138,7 @@ spec:
                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
                           sh """
-                              println ${env.SONAR_HOST_URL}
+                              echo ${env.SONAR_HOST_URL}
                               mvn org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar
                           """
                        } 
