@@ -186,6 +186,10 @@ spec:
         }
         failure{
             echo "========pipeline execution failed========"
+            script {
+               def logContent = Jenkins.getInstance().getItemByFullName(env.JOB_NAME).getBuildByNumber(Integer.parseInt(env.BUILD_NUMBER)).logFile.text
+               writeFile file: "log-build.txt", text: logContent
+            }
         }
     }
 }
