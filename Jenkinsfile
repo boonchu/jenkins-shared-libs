@@ -157,11 +157,11 @@ spec:
                        execPattern: '**/**.exec',
                        sourcePattern: '**/src/main/java',
                        inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
-                       minimumMethodCoverage: '80',
+                       minimumMethodCoverage: '10',
 		       maximumMethodCoverage: '85',
-		       minimumClassCoverage: '80',
+		       minimumClassCoverage: '10',
 		       maximumClassCoverage: '85',
-		       minimumLineCoverage: '80',
+		       minimumLineCoverage: '10',
 		       maximumLineCoverage: '85'
 	           )
 
