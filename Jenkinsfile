@@ -4,8 +4,7 @@
 @Library('jenkins-shared-lib@1.0.0') _
 
 pipeline {
-
-    environment{
+    environment {
         def CONFIG_FILE_UUID   = '8ac4e324-359d-4b24-9cc3-04893a7d56ce'
         def SONAR_SERVER_URL   = 'http://172.30.30.102:9000'
         def SONAR_SCANNER_HASH = '6d401f63ef2d3cbae6c1536064077d2178bb6d2e'
@@ -120,61 +119,60 @@ spec:
                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/
                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                        sh """
-		           mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
+		                    mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
                               -Dsonar.projectKey=maven-code-analysis \
                               -Dsonar.host.url=${SONAR_SERVER_URL} \
                               -Dsonar.login=${SONAR_SCANNER_HASH} \
-		              -gs ${MAVEN_GLOBAL_SETTINGS}
+		                    -gs ${MAVEN_GLOBAL_SETTINGS}
                        """
                    }
                }
             }
         }
+
         stage("Jacoco Code Coverage"){
             steps{
-               helloWorldSimple("Boonchu", "Wednesday")
-               container("maven") {
-
-                   configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
+                helloWorldSimple("Boonchu", "Wednesday")
+                container("maven") {
+                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
-                          sh """
-                              echo ${env.SONAR_HOST_URL}
-		              mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
-		                -Dautoconfig.skip=true -Dmaven.test.skip=false \
-		                -Dmaven.test.failure.ignore=true sonar:sonar \
-                                -Dsonar.host.url=${SONAR_SERVER_URL} \
-                                -Dsonar.login=${SONAR_SCANNER_HASH} \
-		                -gs ${MAVEN_GLOBAL_SETTINGS}
-		          """
-                          // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-                       }
-                   }
+                            sh """
+                                echo ${env.SONAR_HOST_URL}
+		                        mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
+                                    -Dautoconfig.skip=true -Dmaven.test.skip=false \
+                                    -Dmaven.test.failure.ignore=true sonar:sonar \
+                                    -Dsonar.host.url=${SONAR_SERVER_URL} \
+                                    -Dsonar.login=${SONAR_SCANNER_HASH} \
+                                    -gs ${MAVEN_GLOBAL_SETTINGS}
+		                    """
+                            // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+                        }
+                    }
+                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
+                    timeout(time: 15, unit: 'MINUTES') {
+                       script {
+                            def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
+                            if (qg.status != 'OK') {
+                               error "Pipeline aborted due to a quality gate failure: ${qg.status}"
+                            }
+                        }
+                    }
 
                    jacoco(
-		       buildOverBuild: false,
-		       changeBuildStatus: true,
-                       classPattern: '**/classes',
-                       execPattern: '**/**.exec',
-                       sourcePattern: '**/src/main/java',
-                       inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
-                       minimumMethodCoverage: '10',
-		       maximumMethodCoverage: '85',
-		       minimumClassCoverage: '10',
-		       maximumClassCoverage: '85',
-		       minimumLineCoverage: '10',
-		       maximumLineCoverage: '85'
-	           )
-
-                   // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
-                   timeout(time: 15, unit: 'MINUTES') {
-                       script {
-                           def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
-                           if (qg.status != 'OK') {
-                               error "Pipeline aborted due to a quality gate failure: ${qg.status}"
-                           }
-                       }
-                   }
-               }
+                        buildOverBuild: false,
+                        changeBuildStatus: true,
+                        classPattern: '**/classes',
+                        execPattern: '**/**.exec',
+                        sourcePattern: '**/src/main/java',
+                        inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
+                        minimumMethodCoverage: '10',
+                        maximumMethodCoverage: '85',
+                        minimumClassCoverage: '10',
+                        maximumClassCoverage: '85',
+                        minimumLineCoverage: '10',
+                        maximumLineCoverage: '85'
+	                )
+                }
             }
         }
     }
