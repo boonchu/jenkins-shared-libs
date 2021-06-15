@@ -51,3 +51,8 @@
 
 * Setup 'SonarQube Scanner' Code Analysis
   - https://www.programmersought.com/article/6957827178/
+   
+* Setup 'SonarQube Server' with webhook
+  - https://stackoverflow.com/questions/54428685/set-a-sonarqube-webhook-in-jenkinsfile
+  - https://docs.sonarqube.org/latest/project-administration/webhooks/
+  - https://www.programmersought.com/article/6957827178/

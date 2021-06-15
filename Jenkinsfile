@@ -139,7 +139,7 @@ spec:
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
                           sh """
                               echo ${env.SONAR_HOST_URL}
-		              mvn org.jacoco:jacoco-maven-plugin:${SONAR_PLUGIN_VERSION}:prepare-agent -f pom.xml clean test \
+		              mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
 		                -Dautoconfig.skip=true -Dmaven.test.skip=false \
 		                -Dmaven.test.failure.ignore=true sonar:sonar \
                                 -Dsonar.host.url=${SONAR_SERVER_URL} \
