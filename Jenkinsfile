@@ -151,7 +151,8 @@ spec:
                     // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
                     timeout(time: 15, unit: 'MINUTES') {
                        script {
-                            def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
+                            // def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
+                            def qg = waitForQualityGate()
                             if (qg.status != 'OK') {
                                error "Pipeline aborted due to a quality gate failure: ${qg.status}"
                             }
