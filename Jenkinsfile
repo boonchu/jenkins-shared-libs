@@ -120,7 +120,7 @@ spec:
                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/
                    configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                        sh """
-		                    mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
+		          mvn clean compile org.sonarsource.scanner.maven:sonar-maven-plugin:${SONAR_PLUGIN_VERSION}:sonar -f pom.xml \
                               -Dsonar.projectKey=maven-code-analysis \
                               -Dsonar.host.url=${SONAR_SERVER_URL} \
                               -Dsonar.login=${SONAR_SCANNER_HASH} \
@@ -139,33 +139,16 @@ spec:
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
                             sh """
                                 echo ${env.SONAR_HOST_URL}
-		                        mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
-                                          -Dautoconfig.skip=true -Dmaven.test.skip=false \
-                                          -Dmaven.test.failure.ignore=true sonar:sonar \
-                                          -Dsonar.host.url=${SONAR_SERVER_URL} \
-                                          -Dsonar.login=${SONAR_SCANNER_HASH} \
-                                          -gs ${MAVEN_GLOBAL_SETTINGS}
+		                mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
+                                     -Dautoconfig.skip=true -Dmaven.test.skip=false \
+                                     -Dmaven.test.failure.ignore=true sonar:sonar \
+                                     -Dsonar.host.url=${SONAR_SERVER_URL} \
+                                     -Dsonar.login=${SONAR_SCANNER_HASH} \
+                                     -gs ${MAVEN_GLOBAL_SETTINGS}
                                """
                             // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                         }
                     }
-
-                    // https://community.sonarsource.com/t/waitforqualitygate-timeout-in-jenkins/2116/8
-                    // https://community.sonarsource.com/t/quality-gate-is-unable-to-report-status-back-to-jenkins/21454/13
-                   
-                    // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
-                    // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server 
-                    // has called the Jenkins webhook
-                    timeout(time: 5, unit: 'MINUTES') {
-                        script {
-                            // def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
-                            def qg = waitForQualityGate(abortPipeline: true)
-                            if (qg.status != 'OK') {
-                               error "Pipeline aborted due to a quality gate failure: ${qg.status}"
-                            }
-                        }
-                    }
-
                     jacoco(
                         buildOverBuild: false,
                         changeBuildStatus: true,
@@ -179,7 +162,26 @@ spec:
                         maximumClassCoverage: '85',
                         minimumLineCoverage: '10',
                         maximumLineCoverage: '85'
-	                )
+	            )
+                }
+            }
+        }
+        stage("Quality Gate"){
+            steps{
+                // https://community.sonarsource.com/t/waitforqualitygate-timeout-in-jenkins/2116/8
+                // https://community.sonarsource.com/t/quality-gate-is-unable-to-report-status-back-to-jenkins/21454/13
+
+                // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
+                // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server
+                // has called the Jenkins webhook
+                timeout(time: 5, unit: 'MINUTES') {
+                    script {
+                        // def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
+                        def qg = waitForQualityGate(abortPipeline: true)
+                        if (qg.status != 'OK') {
+                           error "Pipeline aborted due to a quality gate failure: ${qg.status}"
+                        }
+                    } 
                 }
             }
         }
