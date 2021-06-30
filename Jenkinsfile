@@ -42,7 +42,7 @@ spec:
         timeout(time: 150, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
-        retry(2)
+        retry(0)
     }
 
     stages {
@@ -150,8 +150,9 @@ spec:
                         }
                     }
 
-                    sleep(10)
-
+                    // https://community.sonarsource.com/t/waitforqualitygate-timeout-in-jenkins/2116/8
+                    // https://community.sonarsource.com/t/quality-gate-is-unable-to-report-status-back-to-jenkins/21454/13
+                   
                     // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
                     // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server 
                     // has called the Jenkins webhook
