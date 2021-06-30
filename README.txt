@@ -1,3 +1,7 @@
+### code examples to use within pipelines
+
+* https://github.com/thombergs/code-examples
+
 ### Getting Started with Shared Library in Jenkins
 
 * https://www.youtube.com/watch?v=Wj-weFEsTb0
@@ -56,3 +60,4 @@
   - https://stackoverflow.com/questions/54428685/set-a-sonarqube-webhook-in-jenkinsfile
   - https://docs.sonarqube.org/latest/project-administration/webhooks/
   - https://www.programmersought.com/article/6957827178/
+  - https://tomgregory.com/sonarqube-quality-gates-in-jenkins-build-pipeline/
