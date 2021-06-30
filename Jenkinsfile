@@ -139,20 +139,22 @@ spec:
                             sh """
                                 echo ${env.SONAR_HOST_URL}
 		                        mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
-                                    -Dautoconfig.skip=true -Dmaven.test.skip=false \
-                                    -Dmaven.test.failure.ignore=true sonar:sonar \
-                                    -Dsonar.host.url=${SONAR_SERVER_URL} \
-                                    -Dsonar.login=${SONAR_SCANNER_HASH} \
-                                    -gs ${MAVEN_GLOBAL_SETTINGS}
-		                    """
+                                          -Dautoconfig.skip=true -Dmaven.test.skip=false \
+                                          -Dmaven.test.failure.ignore=true sonar:sonar \
+                                          -Dsonar.host.url=${SONAR_SERVER_URL} \
+                                          -Dsonar.login=${SONAR_SCANNER_HASH} \
+                                          -gs ${MAVEN_GLOBAL_SETTINGS}
+                               """
                             // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                         }
                     }
                     // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
+                    // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server 
+                    // has called the Jenkins webhook
                     timeout(time: 15, unit: 'MINUTES') {
                        script {
                             // def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
-                            def qg = waitForQualityGate()
+                            def qg = waitForQualityGate(abortPipeline: true)
                             if (qg.status != 'OK') {
                                error "Pipeline aborted due to a quality gate failure: ${qg.status}"
                             }
