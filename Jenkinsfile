@@ -42,6 +42,7 @@ spec:
         timeout(time: 150, unit: 'MINUTES')
         buildDiscarder(logRotator(numToKeepStr: '10'))
         disableConcurrentBuilds()
+        retry(2)
     }
 
     stages {
@@ -149,23 +150,22 @@ spec:
                         }
                     }
 
+                    sleep(10)
 
-                    waitForQualityGate(abortPipeline: true)
- 
                     // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
                     // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server 
                     // has called the Jenkins webhook
-                    // timeout(time: 15, unit: 'MINUTES') {
-                       // script {
+                    timeout(time: 5, unit: 'MINUTES') {
+                        script {
                             // def qg = waitForQualityGate(webhookSecretId: 'sonar-webhook')
-                            // def qg = waitForQualityGate(abortPipeline: true)
-                            // if (qg.status != 'OK') {
-                            //   error "Pipeline aborted due to a quality gate failure: ${qg.status}"
-                            //}
-                        // }
-                    // }
+                            def qg = waitForQualityGate(abortPipeline: true)
+                            if (qg.status != 'OK') {
+                               error "Pipeline aborted due to a quality gate failure: ${qg.status}"
+                            }
+                        }
+                    }
 
-                   jacoco(
+                    jacoco(
                         buildOverBuild: false,
                         changeBuildStatus: true,
                         classPattern: '**/classes',
