@@ -137,9 +137,23 @@ spec:
                 container("maven") {
                     configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
                        withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
+                            jacoco(
+                                buildOverBuild: false,
+                                changeBuildStatus: true,
+                                classPattern: '**/classes',
+                                execPattern: '**/**.exec',
+                                sourcePattern: '**/src/main/java',
+                                inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
+                                minimumMethodCoverage: '10',
+                                maximumMethodCoverage: '85',
+                                minimumClassCoverage: '10',
+                                maximumClassCoverage: '85',
+                                minimumLineCoverage: '10',
+                                maximumLineCoverage: '85'
+                            )
                             sh """
                                 echo ${env.SONAR_HOST_URL}
-		                mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
+		                        mvn org.jacoco:jacoco-maven-plugin:prepare-agent -f pom.xml clean test \
                                      -Dautoconfig.skip=true -Dmaven.test.skip=false \
                                      -Dmaven.test.failure.ignore=true sonar:sonar \
                                      -Dsonar.host.url=${SONAR_SERVER_URL} \
@@ -149,20 +163,6 @@ spec:
                             // junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
                         }
                     }
-                    jacoco(
-                        buildOverBuild: false,
-                        changeBuildStatus: true,
-                        classPattern: '**/classes',
-                        execPattern: '**/**.exec',
-                        sourcePattern: '**/src/main/java',
-                        inclusionPattern: '**/*.java,**/*.groovy,**/*.kt,**/*',
-                        minimumMethodCoverage: '10',
-                        maximumMethodCoverage: '85',
-                        minimumClassCoverage: '10',
-                        maximumClassCoverage: '85',
-                        minimumLineCoverage: '10',
-                        maximumLineCoverage: '85'
-	            )
                 }
             }
         }
@@ -170,6 +170,7 @@ spec:
             steps{
                 // https://community.sonarsource.com/t/waitforqualitygate-timeout-in-jenkins/2116/8
                 // https://community.sonarsource.com/t/quality-gate-is-unable-to-report-status-back-to-jenkins/21454/13
+                // https://stackoverflow.com/questions/45693418/sonarqube-quality-gate-not-sending-webhook-to-jenkins
 
                 // https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-jenkins/#header-6
                 // use the waitForQualityGate method exposed by the plugin to wait until the SonarQube server
