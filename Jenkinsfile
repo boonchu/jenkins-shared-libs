@@ -136,7 +136,7 @@ spec:
                 helloWorldSimple("Boonchu", "Wednesday")
                 container("maven") {
                     configFileProvider([configFile(fileId: "${CONFIG_FILE_UUID}", variable: 'MAVEN_GLOBAL_SETTINGS')]) {
-                       withSonarQubeEnv(installationName: 'sonarqube-server', envOnly: true) {
+                       withSonarQubeEnv(installationName: 'sonarqube-server') {
                             jacoco(
                                 buildOverBuild: false,
                                 changeBuildStatus: true,
